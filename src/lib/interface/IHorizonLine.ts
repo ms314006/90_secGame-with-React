@@ -5,6 +5,9 @@ export interface IHorizonLine {
     height: number;
     YPos: number;
   };
+  FPS: number;
+  image: string;
   init(): void;
   draw(): void;
+  update(deltaTime: number, speed: number): void;
 }
