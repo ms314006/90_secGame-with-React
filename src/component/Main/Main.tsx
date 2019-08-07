@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import Runner from '../../lib/Runner';
-import styles from './index.scss';
 
 const Main = () => {
   const canvas = useRef(null);
@@ -9,9 +8,7 @@ const Main = () => {
     runner.loadImages();
   }, []);
   return (
-    <div className={styles.mainBlock}>
-      <div id="chrome-dino" ref={canvas} />
-    </div>
+    <div id="chrome-dino" ref={canvas} />
   );
 };
 
