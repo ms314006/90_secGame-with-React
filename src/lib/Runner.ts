@@ -1,4 +1,5 @@
 import { IRunner } from './interface/IRunner';
+import { IHorizon } from './interface/IHorizon';
 import Horizon from './Horizon';
 
 class Runner implements IRunner {
@@ -7,6 +8,12 @@ class Runner implements IRunner {
   containerEl: Element = document.createElement('div');
 
   canvas: Element = document.createElement('div');
+
+  ctx: any;
+
+  updatePending: boolean = false;
+
+  raqId: any;
 
   config: any;
 
@@ -26,15 +33,17 @@ class Runner implements IRunner {
 
   events:any = {
     LOAD: 'load',
+    KEYDOWN: 'keydown',
+    KEYUP: 'keyup',
   };
 
   spriteDefinition:any = {
     ldpi: {
-      horizon: { x: 2, y: 54, }, // 地面
+      horizon: { x: 0, y: 0, }, // 背景
     },
   }
 
-  horizon: any;
+  horizon: IHorizon;
 
   private classes: any = {
     container: 'runner-container',
@@ -42,12 +51,16 @@ class Runner implements IRunner {
     player: '',
   };
 
+  private keyCodes:any = {
+    start: { '38': 1, '32': 1 },
+  }
+
   constructor(containerSelector: Element, optConfig?: any) {
     this.outerContainerEl = containerSelector;
     this.config = optConfig || { speed: 6, };
     this.dimensions = {
       width: 600,
-      height: 150,
+      height: 300,
     };
     this.currentSpeed = this.config.speed;
     this.time = 0;
@@ -70,20 +83,85 @@ class Runner implements IRunner {
     return canvas;
   }
 
+  startListening = ():void => {
+    document.addEventListener(this.events.KEYDOWN, this);
+    document.addEventListener(this.events.KEYUP, this);
+  }
+
+  stopListening = ():void => {
+    document.removeEventListener(this.events.KEYDOWN, this);
+    document.removeEventListener(this.events.KEYUP, this);
+  }
+
+  handleEvent = (e): void => {
+    return ((eType, events) => {
+      switch (eType) {
+        case events.KEYDOWN:
+          this.onKeyDown(e);
+          break;
+        default:
+          break;
+      }
+    })(e.type, this.events);
+  }
+
+  onKeyDown = (e): void => {
+    if (!this.crashed && !this.paused) {
+      if (this.keyCodes.start[e.keyCode]) {
+        e.preventDefault();
+        this.setPlayStatus(!this.playing);
+        this.update();
+      }
+    }    
+  }
+
+  setPlayStatus = (isPlaying: boolean): void => {
+    this.playing = isPlaying;
+  }
+
+  update = (): void => {
+    const getTimeStamp = () => performance.now();
+    this.updatePending = false;
+
+    const now = getTimeStamp();
+    const deltaTime = now - (this.time || now);
+
+    this.time = now;
+    if (this.playing && !this.paused) {
+      this.clearCanvas();
+      this.horizon.update(deltaTime, this.currentSpeed);
+    }
+    this.scheduleNextUpdate();
+  }
+
+  clearCanvas = (): void => {
+    this.ctx.clearRect(0, 0, this.dimensions.width,
+      this.dimensions.height);
+  }
+
+  scheduleNextUpdate = (): void => {
+    if (!this.updatePending) {
+      this.updatePending = true;
+      this.raqId = requestAnimationFrame(this.update);
+    }
+  }
+
   init = (): void => {
     this.containerEl.className = this.classes.container;
     const canvas: HTMLCanvasElement = this.createCanvas(
       this.containerEl, this.dimensions.width, this.dimensions.height, this.classes.player
     );
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.fillStyle = '#f7f7f7';
-      ctx.fill();
+    this.ctx = canvas.getContext('2d');
+    if (this.ctx) {
+      this.ctx.fillStyle = '#f7f7f7';
+      this.ctx.fill();
     }
 
     /* 背景區塊 */
     this.horizon = new Horizon(canvas, this.spriteDefinition.ldpi);
     this.outerContainerEl.appendChild(this.containerEl);
+    this.update();
+    this.startListening();
   }
 
   loadImages = (): void => {
@@ -91,7 +169,7 @@ class Runner implements IRunner {
     if (imageSprite) {
       if (imageSprite.complete) {
         this.init();
-      } else { // 图片没有加载完成，监听其 load 事件
+      } else {
         imageSprite.addEventListener(this.events.LOAD, this.init);
       }
     }
