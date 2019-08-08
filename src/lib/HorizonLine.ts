@@ -7,11 +7,11 @@ class HorizonLine implements IHorizonLine {
 
   image: string;
 
-  sourceXPos: any[] = [];
+  sourceYPos: any[] = [];
 
-  xPos: any[] = [];
+  xPos: number = 0;
 
-  yPos: number = 0;
+  yPos: number[] = [];
 
   spritePos: { x: number, y: number, } = {
     x: 0,
@@ -19,9 +19,10 @@ class HorizonLine implements IHorizonLine {
   };
 
   dimensions: any = {
-    width: 600,
-    height: 300,
+    width: 1200,
+    height: 900,
     YPos: 0,
+    Xpos: 0,
   };
 
   constructor(
@@ -38,25 +39,24 @@ class HorizonLine implements IHorizonLine {
     this.draw();
   }
 
-  updateXPos = (pos: number, incre: number): void => {
+  updateYPos = (pos: number, incre: number): void => {
     const line1 = pos;
     const line2 = pos === 0 ? 1 : 0;
-    this.xPos[line1] -= incre;
-    this.xPos[line2] = this.xPos[line1] + this.dimensions.width;
-
-    if (this.xPos[line1] <= -this.dimensions.width) {
-      this.xPos[line1] += this.dimensions.width * 2;
-      this.xPos[line2] = this.xPos[line1] - this.dimensions.width;
-      this.sourceXPos[line1] = this.spritePos.x;
+    this.yPos[line1] += incre;
+    this.yPos[line2] = this.yPos[line1] - this.dimensions.height;
+    if (this.yPos[line1] >= this.dimensions.height) {
+      this.yPos[line1] += 0;
+      this.yPos[line2] = this.yPos[line1] - this.dimensions.height;
+      this.sourceYPos[line1] = this.spritePos.y;
     }
   }
 
   update = (deltaTime: number, speed: number) => {
     const incre = Math.floor(speed * (this.FPS / 1000) * deltaTime);
-    if (this.xPos[0] <= 0) {
-      this.updateXPos(0, incre);
+    if (this.yPos[0] <= this.dimensions.height && this.yPos[0] >= 0) {
+      this.updateYPos(0, incre);
     } else {
-      this.updateXPos(1, incre);
+      this.updateYPos(1, incre);
     }
     this.draw();
   }
@@ -68,26 +68,27 @@ class HorizonLine implements IHorizonLine {
         this.dimensions[d] = elem;
       }
     });
-    this.sourceXPos = [this.spritePos.x,
-      this.spritePos.x + this.dimensions.width];
-    this.xPos = [0, this.dimensions.width];
-    this.yPos = this.dimensions.YPos;
+    this.sourceYPos = [this.spritePos.y,
+      0];
+    this.xPos = this.dimensions.Xpos;
+    this.yPos = [0, -this.dimensions.height];
   }
 
   draw = (): void => {
     const ctx: any = this.canvas.getContext('2d');
     ctx.drawImage(
       document.getElementById(this.image),
-      this.sourceXPos[0], this.spritePos.y,
+      this.spritePos.x, this.sourceYPos[0],
       this.dimensions.width, this.dimensions.height,
-      this.xPos[0], this.yPos,
+      this.xPos, this.yPos[0],
       this.dimensions.width, this.dimensions.height
     );
+
     ctx.drawImage(
       document.getElementById(this.image),
-      this.sourceXPos[0], this.spritePos.y,
+      this.spritePos.x, this.sourceYPos[1],
       this.dimensions.width, this.dimensions.height,
-      this.xPos[1], this.yPos,
+      this.xPos, this.yPos[1],
       this.dimensions.width, this.dimensions.height
     );
   }

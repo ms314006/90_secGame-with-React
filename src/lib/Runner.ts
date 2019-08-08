@@ -1,6 +1,7 @@
 import { IRunner } from './interface/IRunner';
 import { IHorizon } from './interface/IHorizon';
 import Horizon from './Horizon';
+import { config } from './config';
 
 class Runner implements IRunner {
   outerContainerEl: Element;
@@ -10,6 +11,8 @@ class Runner implements IRunner {
   canvas: Element = document.createElement('div');
 
   ctx: any;
+
+  runningTime: number = 0;
 
   updatePending: boolean = false;
 
@@ -40,6 +43,7 @@ class Runner implements IRunner {
   spriteDefinition:any = {
     ldpi: {
       horizon: { x: 0, y: 0, }, // 背景
+      ball: { x: 0, y: 0, }// 氣球
     },
   }
 
@@ -57,10 +61,11 @@ class Runner implements IRunner {
 
   constructor(containerSelector: Element, optConfig?: any) {
     this.outerContainerEl = containerSelector;
-    this.config = optConfig || { speed: 6, };
+    this.config = optConfig || config;
+
     this.dimensions = {
-      width: 600,
-      height: 300,
+      width: 1200,
+      height: 900,
     };
     this.currentSpeed = this.config.speed;
     this.time = 0;
@@ -129,7 +134,11 @@ class Runner implements IRunner {
     this.time = now;
     if (this.playing && !this.paused) {
       this.clearCanvas();
-      this.horizon.update(deltaTime, this.currentSpeed);
+
+      this.runningTime += deltaTime;
+      const hasObstacles = this.runningTime > this.config.clearTime;
+
+      this.horizon.update(deltaTime, this.currentSpeed, hasObstacles);
     }
     this.scheduleNextUpdate();
   }
@@ -158,7 +167,8 @@ class Runner implements IRunner {
     }
 
     /* 背景區塊 */
-    this.horizon = new Horizon(canvas, this.spriteDefinition.ldpi);
+    this.horizon = new Horizon(canvas, this.spriteDefinition.ldpi, this.dimensions, this.config.gapCoefficient);
+    this.horizon.init();
     this.outerContainerEl.appendChild(this.containerEl);
     this.update();
     this.startListening();
