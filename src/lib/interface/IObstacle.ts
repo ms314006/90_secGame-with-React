@@ -1,6 +1,6 @@
 export interface IObstacle {
   canvas: HTMLCanvasElement;
-  init(speed: number): void;
+  init(): void;
   draw(): void;
   isVisible(): void;
   update(deltaTime: number, speed: number): void;

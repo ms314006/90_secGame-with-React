@@ -1,7 +1,9 @@
 import { IRunner } from './interface/IRunner';
 import { IHorizon } from './interface/IHorizon';
+import { IDuck } from './interface/IDuck';
 import Horizon from './Horizon';
-import { config } from './config';
+import Duck from './Duck';
+import { config, dimensions } from './config';
 
 class Runner implements IRunner {
   outerContainerEl: Element;
@@ -20,34 +22,29 @@ class Runner implements IRunner {
 
   config: any;
 
-  dimensions: any;
+  dimensions: any = dimensions;
 
-  time: number;
+  time: number = 0;
 
   currentSpeed: number;
 
-  activated: boolean;
+  activated: boolean = false;
 
-  playing: boolean;
+  playing: boolean = false;
 
-  crashed: boolean;
+  crashed: boolean = false;
 
-  paused: boolean;
+  paused: boolean = false;
 
-  events:any = {
-    LOAD: 'load',
-    KEYDOWN: 'keydown',
-    KEYUP: 'keyup',
+  events: any = {
+    load: 'load',
+    keyDown: 'keydown',
+    keyUp: 'keyup',
   };
 
-  spriteDefinition:any = {
-    ldpi: {
-      horizon: { x: 0, y: 0, }, // 背景
-      ball: { x: 0, y: 0, }// 氣球
-    },
-  }
+  horizon: IHorizon = null;
 
-  horizon: IHorizon;
+  duck: IDuck = null;
 
   private classes: any = {
     container: 'runner-container',
@@ -55,24 +52,16 @@ class Runner implements IRunner {
     player: '',
   };
 
-  private keyCodes:any = {
+  private keyCodes: any = {
     start: { '38': 1, '32': 1 },
+    controlDuckRight: { '39': 1, },
+    controlDuckLeft: { '37': 1, },
   }
 
   constructor(containerSelector: Element, optConfig?: any) {
     this.outerContainerEl = containerSelector;
     this.config = optConfig || config;
-
-    this.dimensions = {
-      width: 1200,
-      height: 900,
-    };
     this.currentSpeed = this.config.speed;
-    this.time = 0;
-    this.activated = false;
-    this.playing = false;
-    this.crashed = false;
-    this.paused = false;
   }
 
   private createCanvas = (
@@ -89,20 +78,23 @@ class Runner implements IRunner {
   }
 
   startListening = ():void => {
-    document.addEventListener(this.events.KEYDOWN, this);
-    document.addEventListener(this.events.KEYUP, this);
+    document.addEventListener(this.events.keyDown, this);
+    document.addEventListener(this.events.keyUp, this);
   }
 
   stopListening = ():void => {
-    document.removeEventListener(this.events.KEYDOWN, this);
-    document.removeEventListener(this.events.KEYUP, this);
+    document.removeEventListener(this.events.keyDown, this);
+    document.removeEventListener(this.events.keyUp, this);
   }
 
   handleEvent = (e): void => {
     return ((eType, events) => {
       switch (eType) {
-        case events.KEYDOWN:
+        case events.keyDown:
           this.onKeyDown(e);
+          break;
+        case events.keyUp:
+          this.onKeyUp(e);
           break;
         default:
           break;
@@ -112,12 +104,39 @@ class Runner implements IRunner {
 
   onKeyDown = (e): void => {
     if (!this.crashed && !this.paused) {
-      if (this.keyCodes.start[e.keyCode]) {
-        e.preventDefault();
-        this.setPlayStatus(!this.playing);
-        this.update();
+      switch (1) {
+        case this.keyCodes.start[e.keyCode]:
+          e.preventDefault();
+          this.setPlayStatus(!this.playing);
+          this.update();
+          break;
+        case this.keyCodes.controlDuckRight[e.keyCode]:
+          e.preventDefault();
+          this.duck.setRight(true);
+          break;
+        case this.keyCodes.controlDuckLeft[e.keyCode]:
+          e.preventDefault();
+          this.duck.setLeft(true);
+          break;
+        default:
       }
-    }    
+    }
+  }
+
+  onKeyUp = (e): void => {
+    if (!this.crashed && !this.paused) {
+      switch (1) {
+        case this.keyCodes.controlDuckRight[e.keyCode]:
+          e.preventDefault();
+          this.duck.setRight(false);
+          break;
+        case this.keyCodes.controlDuckLeft[e.keyCode]:
+          e.preventDefault();
+          this.duck.setLeft(false);
+          break;
+        default:
+      }
+    }
   }
 
   setPlayStatus = (isPlaying: boolean): void => {
@@ -125,20 +144,19 @@ class Runner implements IRunner {
   }
 
   update = (): void => {
-    const getTimeStamp = () => performance.now();
-    this.updatePending = false;
+    if (this.playing && !this.paused && !this.activated) {
+      const getTimeStamp = () => performance.now();
+      this.updatePending = false;
+      const now = getTimeStamp();
+      const deltaTime = now - (this.time || now);
+      this.time = now;
 
-    const now = getTimeStamp();
-    const deltaTime = now - (this.time || now);
-
-    this.time = now;
-    if (this.playing && !this.paused) {
       this.clearCanvas();
 
       this.runningTime += deltaTime;
       const hasObstacles = this.runningTime > this.config.clearTime;
-
       this.horizon.update(deltaTime, this.currentSpeed, hasObstacles);
+      this.duck.update(deltaTime);
     }
     this.scheduleNextUpdate();
   }
@@ -167,8 +185,10 @@ class Runner implements IRunner {
     }
 
     /* 背景區塊 */
-    this.horizon = new Horizon(canvas, this.spriteDefinition.ldpi, this.dimensions, this.config.gapCoefficient);
+    this.horizon = new Horizon(canvas, this.dimensions, this.config.gapCoefficient);
     this.horizon.init();
+    this.duck = new Duck(canvas);
+    this.duck.init();
     this.outerContainerEl.appendChild(this.containerEl);
     this.update();
     this.startListening();
@@ -180,7 +200,7 @@ class Runner implements IRunner {
       if (imageSprite.complete) {
         this.init();
       } else {
-        imageSprite.addEventListener(this.events.LOAD, this.init);
+        imageSprite.addEventListener(this.events.load, this.init);
       }
     }
   }

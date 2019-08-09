@@ -27,12 +27,10 @@ class HorizonLine implements IHorizonLine {
 
   constructor(
     canvas: HTMLCanvasElement,
-    spritePos: { x: number, y: number, },
     image: string,
     FPS: number
   ) {
     this.canvas = canvas;
-    this.spritePos = spritePos;
     this.image = image;
     this.FPS = FPS;
     this.init();
