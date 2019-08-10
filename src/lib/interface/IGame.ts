@@ -1,4 +1,4 @@
-export interface IRunner {
+export interface IGame {
   outerContainerEl: Element;
   containerEl: Element;
   config: any;

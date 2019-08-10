@@ -1,4 +1,4 @@
-import { IRunner } from './interface/IRunner';
+import { IGame } from './interface/IGame';
 import { IHorizon } from './interface/IHorizon';
 import { IDuck } from './interface/IDuck';
 import { IGameOverPanel } from './interface/IGameOverPanel'
@@ -8,7 +8,7 @@ import GameOverPanel from './GameOverPanel';
 import { config, dimensions } from './config';
 import { checkForCollision } from '../util'
 
-class Runner implements IRunner {
+class Game implements IGame {
   outerContainerEl: Element;
 
   containerEl: Element = document.createElement('div');
@@ -237,4 +237,4 @@ class Runner implements IRunner {
   }
 }
 
-export default Runner;
+export default Game;
