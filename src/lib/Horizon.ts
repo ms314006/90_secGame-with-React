@@ -2,6 +2,7 @@ import HorizonLine from './HorizonLine';
 import Obstacle from './Obstacle';
 import { IHorizon } from './interface/IHorizon';
 import { IHorizonLine } from './interface/IHorizonLine';
+import { IObstacle } from './interface/IObstacle';
 import { FPS, config, obstacleTypes } from './config';
 import { getRandomNum } from '../util';
 
@@ -16,12 +17,17 @@ class Horizon implements IHorizon {
 
   gapCoefficient: number;
 
-  obstacles: any[] = [];
+  obstacles: IObstacle[] = [];
 
   constructor(canvas: HTMLCanvasElement, dimensions: any, gapCoefficient: number) {
     this.canvas = canvas;
     this.dimensions = dimensions;
     this.gapCoefficient = gapCoefficient;
+  }
+
+  reset = (): void => {
+    this.horizonLine.forEach((aHorizonLine) => { aHorizonLine.reset(); });
+    this.obstacles = [];
   }
 
   update = (deltaTime: number, currentSpeed: number, updateObstacles: boolean): void => {

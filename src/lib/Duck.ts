@@ -70,6 +70,19 @@ class Duck implements IDuck {
     this.left = isLeft;
   }
 
+  setCollision = (): void => {
+    this.status = duck.status.crashed;
+  }
+
+  reset = (): void => {
+    this.groundXPos = (dimensions.width / 2) - (this.config.width / 2);
+    this.xPos = this.groundXPos;
+    this.yPos = dimensions.height - this.config.height - config.bottomPad;
+    this.status = duck.status.waiting;
+    this.right = false;
+    this.left = false;
+  }
+
   init = (): void => {
     this.groundXPos = (dimensions.width / 2) - (this.config.width / 2);
     this.xPos = this.groundXPos;
@@ -81,7 +94,7 @@ class Duck implements IDuck {
   draw = (): void => {
     const outputHeight = this.config.height;
     // 移動量
-    const moveDestance = 4;
+    const moveDestance = 6;
     if (this.right
       && this.status !== duck.status.crashed
       && this.xPos <= dimensions.width - 340) {
@@ -93,14 +106,24 @@ class Duck implements IDuck {
       this.xPos -= moveDestance;
     }
 
+    let duckImage = '';
+    switch (this.status) {
+      case duck.status.waiting:
+        duckImage = `duck-${this.swimStep}`;
+        break;
+      case duck.status.crashed:
+        duckImage = 'duck-lose';
+        break;
+      default:
+    }
+
     this.ctx.drawImage(
-      document.getElementById(`duck-${this.swimStep}`),
+      document.getElementById(duckImage),
       0, 0,
       this.config.width, this.config.height,
       this.xPos, this.yPos,
       this.config.width, outputHeight
     );
-
     this.ctx.globalAlpha = 1;
   }
 }

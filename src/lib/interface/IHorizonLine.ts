@@ -10,4 +10,5 @@ export interface IHorizonLine {
   init(): void;
   draw(): void;
   update(deltaTime: number, speed: number): void;
+  reset(): void;
 }

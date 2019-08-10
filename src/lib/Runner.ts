@@ -1,16 +1,19 @@
 import { IRunner } from './interface/IRunner';
 import { IHorizon } from './interface/IHorizon';
 import { IDuck } from './interface/IDuck';
+import { IGameOverPanel } from './interface/IGameOverPanel'
 import Horizon from './Horizon';
 import Duck from './Duck';
+import GameOverPanel from './GameOverPanel';
 import { config, dimensions } from './config';
+import { checkForCollision } from '../util'
 
 class Runner implements IRunner {
   outerContainerEl: Element;
 
   containerEl: Element = document.createElement('div');
 
-  canvas: Element = document.createElement('div');
+  canvas: HTMLCanvasElement = null;
 
   ctx: any;
 
@@ -45,6 +48,8 @@ class Runner implements IRunner {
   horizon: IHorizon = null;
 
   duck: IDuck = null;
+
+  gameOverPanel: IGameOverPanel = null;
 
   private classes: any = {
     container: 'runner-container',
@@ -108,7 +113,6 @@ class Runner implements IRunner {
         case this.keyCodes.start[e.keyCode]:
           e.preventDefault();
           this.setPlayStatus(!this.playing);
-          this.update();
           break;
         case this.keyCodes.controlDuckRight[e.keyCode]:
           e.preventDefault();
@@ -143,20 +147,35 @@ class Runner implements IRunner {
     this.playing = isPlaying;
   }
 
+  getTimeStamp = () => performance.now();
+
   update = (): void => {
-    const getTimeStamp = () => performance.now();
     this.updatePending = false;
-    const now = getTimeStamp();
+    const now = this.getTimeStamp();
     const deltaTime = now - (this.time || now);
     this.time = now;
 
-    if (this.playing && !this.paused) {
+    if (this.playing && !this.paused && !this.crashed) {
       this.clearCanvas();
 
       this.runningTime += deltaTime;
       const hasObstacles = this.runningTime > this.config.clearTime;
       this.horizon.update(deltaTime, this.currentSpeed, hasObstacles);
       this.duck.update(deltaTime);
+      let isCollision = hasObstacles;
+      isCollision = this.horizon.obstacles.some((obstacle) => {
+        return hasObstacles && checkForCollision(obstacle, this.duck, this.ctx)
+      });
+      if (isCollision) {
+        this.duck.setCollision();
+        setTimeout(() => {
+          this.crashed = true;
+        }, 50);
+        this.gameOverPanel = new GameOverPanel(
+          this.canvas, this.dimensions, this.reset
+        );
+        this.gameOverPanel.draw();
+      }
     }
     this.scheduleNextUpdate();
   }
@@ -175,19 +194,19 @@ class Runner implements IRunner {
 
   init = (): void => {
     this.containerEl.className = this.classes.container;
-    const canvas: HTMLCanvasElement = this.createCanvas(
+    this.canvas = this.createCanvas(
       this.containerEl, this.dimensions.width, this.dimensions.height, this.classes.player
     );
-    this.ctx = canvas.getContext('2d');
+    this.ctx = this.canvas.getContext('2d');
     if (this.ctx) {
       this.ctx.fillStyle = '#f7f7f7';
       this.ctx.fill();
     }
 
     /* 背景區塊 */
-    this.horizon = new Horizon(canvas, this.dimensions, this.config.gapCoefficient);
+    this.horizon = new Horizon(this.canvas, this.dimensions, this.config.gapCoefficient);
     this.horizon.init();
-    this.duck = new Duck(canvas);
+    this.duck = new Duck(this.canvas);
     this.duck.init();
     this.outerContainerEl.appendChild(this.containerEl);
     this.update();
@@ -195,14 +214,26 @@ class Runner implements IRunner {
   }
 
   loadImages = (): void => {
-    const imageSprite = document.getElementById('offline-resources-1x');
-    if (imageSprite) {
-      if (imageSprite.complete) {
+    const backageGroundImage = document.getElementById('plx-1');
+    if (backageGroundImage) {
+      if (backageGroundImage.complete) {
         this.init();
       } else {
-        imageSprite.addEventListener(this.events.load, this.init);
+        backageGroundImage.addEventListener(this.events.load, this.init);
       }
     }
+  }
+
+  reset = (): void => {
+    this.runningTime = 0;
+    this.setPlayStatus(true);
+    this.paused = false;
+    this.crashed = false;
+    this.currentSpeed = this.config.speed;
+    this.time = this.getTimeStamp();
+    this.clearCanvas();
+    this.horizon.reset();
+    this.duck.reset();
   }
 }
 

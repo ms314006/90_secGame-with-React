@@ -6,4 +6,6 @@ export interface IDuck {
   update(deltaTime: number): void;
   setRight(isRight: boolean): void;
   setLeft(isRight: boolean): void;
+  setCollision(): void;
+  reset(): void;
 }

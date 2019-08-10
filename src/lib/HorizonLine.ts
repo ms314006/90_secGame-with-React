@@ -34,7 +34,11 @@ class HorizonLine implements IHorizonLine {
     this.image = image;
     this.FPS = FPS;
     this.init();
-    this.draw();
+  }
+
+  reset = (): void => {
+    this.xPos = this.dimensions.Xpos;
+    this.yPos = [0, -this.dimensions.height];
   }
 
   updateYPos = (pos: number, incre: number): void => {
@@ -70,6 +74,7 @@ class HorizonLine implements IHorizonLine {
       0];
     this.xPos = this.dimensions.Xpos;
     this.yPos = [0, -this.dimensions.height];
+    this.draw();
   }
 
   draw = (): void => {

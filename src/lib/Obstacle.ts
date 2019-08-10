@@ -17,8 +17,6 @@ class Obstacle implements IObstacle {
 
   maxObstacleLength: number = 3;
 
-  types: any = obstacleTypes;
-
   xPos: number = 0;
 
   yPos: number = 0;
