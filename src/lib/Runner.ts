@@ -53,7 +53,7 @@ class Runner implements IRunner {
   };
 
   private keyCodes: any = {
-    start: { '38': 1, '32': 1 },
+    start: { '32': 1, },
     controlDuckRight: { '39': 1, },
     controlDuckLeft: { '37': 1, },
   }
@@ -144,13 +144,13 @@ class Runner implements IRunner {
   }
 
   update = (): void => {
-    if (this.playing && !this.paused && !this.activated) {
-      const getTimeStamp = () => performance.now();
-      this.updatePending = false;
-      const now = getTimeStamp();
-      const deltaTime = now - (this.time || now);
-      this.time = now;
+    const getTimeStamp = () => performance.now();
+    this.updatePending = false;
+    const now = getTimeStamp();
+    const deltaTime = now - (this.time || now);
+    this.time = now;
 
+    if (this.playing && !this.paused) {
       this.clearCanvas();
 
       this.runningTime += deltaTime;
