@@ -17,7 +17,7 @@ class Game implements IGame {
 
   ctx: any;
 
-  runningTime: number = 0;
+  gameTime: number = 0;
 
   updatePending: boolean = false;
 
@@ -158,9 +158,9 @@ class Game implements IGame {
     if (this.playing && !this.paused && !this.crashed) {
       this.clearCanvas();
 
-      this.runningTime += deltaTime;
-      const hasObstacles = this.runningTime > this.config.clearTime;
-      this.horizon.update(deltaTime, this.currentSpeed, hasObstacles);
+      this.gameTime += deltaTime;
+      const hasObstacles = this.gameTime > this.config.clearTime;
+      this.horizon.update(deltaTime, this.gameTime, this.currentSpeed, hasObstacles);
       this.duck.update(deltaTime);
       let isCollision = hasObstacles;
       isCollision = this.horizon.obstacles.some((obstacle) => {
@@ -206,6 +206,8 @@ class Game implements IGame {
     /* 背景區塊 */
     this.horizon = new Horizon(this.canvas, this.dimensions, this.config.gapCoefficient);
     this.horizon.init();
+
+    /* 小鴨 */
     this.duck = new Duck(this.canvas);
     this.duck.init();
     this.outerContainerEl.appendChild(this.containerEl);
@@ -225,7 +227,7 @@ class Game implements IGame {
   }
 
   reset = (): void => {
-    this.runningTime = 0;
+    this.gameTime = 0;
     this.setPlayStatus(true);
     this.paused = false;
     this.crashed = false;

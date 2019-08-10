@@ -13,13 +13,17 @@ class Horizon implements IHorizon {
 
   horizonLine: IHorizonLine[] = [];
 
+  gameTime: number = 0;
+
   dimensions: any;
 
   gapCoefficient: number;
 
   obstacles: IObstacle[] = [];
 
-  constructor(canvas: HTMLCanvasElement, dimensions: any, gapCoefficient: number) {
+  constructor(
+    canvas: HTMLCanvasElement, dimensions: any, gapCoefficient: number
+  ) {
     this.canvas = canvas;
     this.dimensions = dimensions;
     this.gapCoefficient = gapCoefficient;
@@ -30,7 +34,10 @@ class Horizon implements IHorizon {
     this.obstacles = [];
   }
 
-  update = (deltaTime: number, currentSpeed: number, updateObstacles: boolean): void => {
+  update = (
+    deltaTime: number, gameTime: number, currentSpeed: number, updateObstacles: boolean
+  ): void => {
+    this.gameTime = gameTime;
     this.horizonLine.forEach((horizonLine) => {
       horizonLine.update(deltaTime, currentSpeed);
     });
@@ -45,7 +52,23 @@ class Horizon implements IHorizon {
 
   addNewObstacle = (): void => {
     const obstaclesXpos: number[] = [];
-    const obstacleCount = getRandomNum(3, 3);
+    const getObstacleCountRange = (): number[] => {
+      const currentTime = Math.round(this.gameTime / 1000);
+      switch (true) {
+        case currentTime >= 0 && currentTime < 30:
+          return [1, 2];
+        case currentTime >= 30 && currentTime < 60:
+          return [2, 3];
+        case currentTime >= 60:
+          return [3, 4];
+        default:
+          return [0, 0];
+      }
+    };
+    const obstacleCountRange = getObstacleCountRange();
+    const obstacleCount = getRandomNum(
+      obstacleCountRange[0], obstacleCountRange[1]
+    );
     Array(...new Array(obstacleCount)).forEach(() => {
       const obstacleTypeIndex = getRandomNum(0, 4);
       const obstacleType = obstacleTypes[obstacleTypeIndex];

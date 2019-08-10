@@ -6,6 +6,8 @@ export interface IHorizon {
   horizonLine: IHorizonLine[];
   obstacles: IObstacle[];
   init(): void;
-  update(deltaTime: number, currentSpeed: number, updateObstacles: boolean): void;
+  update(
+    deltaTime: number, gameTime: number, currentSpeed: number, updateObstacles: boolean
+  ): void;
   reset(): void;
 }
