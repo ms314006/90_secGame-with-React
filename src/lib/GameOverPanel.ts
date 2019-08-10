@@ -69,7 +69,8 @@ class GameOverPlanel implements IGameOverPanel {
 
   drawStartButton = (buttonType: string, centerX: number, centerY: number) => {
     const posY = buttonType === 'default' ? 10 : 15;
-    this.ctx.clearRect(centerX - 75, centerY - 20, 150, 55);
+    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.fillRect(centerX - 75, centerY - 20, 150, 55);
     this.ctx.drawImage(
       document.getElementById(`restart-${buttonType}`),
       0, 0, 150, 55,
