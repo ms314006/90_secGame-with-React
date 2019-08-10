@@ -1,3 +1,5 @@
+import CollisionBox from './CollisionBox';
+
 export const FPS = 30;
 
 export const config = {
@@ -24,6 +26,9 @@ export const obstacleTypes = [{
   multipleSpeed: 4,
   minGap: 120,
   minSpeed: 0,
+  collisionBoxes: [
+    new CollisionBox(5, 8, 80, 80)
+  ],
 }, {
   type: 'ball-2',
   width: 120,
@@ -33,6 +38,9 @@ export const obstacleTypes = [{
   multipleSpeed: 4,
   minGap: 120,
   minSpeed: 0,
+  collisionBoxes: [
+    new CollisionBox(5, 8, 80, 80)
+  ],
 }, {
   type: 'ball-3',
   width: 120,
@@ -42,6 +50,9 @@ export const obstacleTypes = [{
   multipleSpeed: 4,
   minGap: 120,
   minSpeed: 0,
+  collisionBoxes: [
+    new CollisionBox(5, 8, 80, 80)
+  ],
 }, {
   type: 'ball-4',
   width: 120,
@@ -51,6 +62,9 @@ export const obstacleTypes = [{
   multipleSpeed: 4,
   minGap: 120,
   minSpeed: 0,
+  collisionBoxes: [
+    new CollisionBox(5, 8, 80, 80)
+  ],
 }, {
   type: 'ball-5',
   width: 120,
@@ -60,6 +74,9 @@ export const obstacleTypes = [{
   multipleSpeed: 4,
   minGap: 120,
   minSpeed: 0,
+  collisionBoxes: [
+    new CollisionBox(5, 8, 80, 80)
+  ],
 }];
 
 export const duck = {
@@ -94,9 +111,11 @@ export const duck = {
       frames: [0],
       msPerFrame: 1000 / 60,
     },
-    ducking: {
-      frames: [264, 323],
-      msPerFrame: 1000 / 8,
-    },
+  },
+  collisionBoxes: {
+    running: [
+      new CollisionBox(30, 5, 55, 80),
+      new CollisionBox(15, 60, 92, 70)
+    ],
   },
 };
