@@ -179,7 +179,7 @@ class Game implements IGame {
       /* 判斷碰撞 */
       let isCollision = hasObstacles;
       isCollision = this.horizon.obstacles.some((obstacle) => {
-        return hasObstacles && checkForCollision(obstacle, this.duck, this.ctx)
+        return hasObstacles && checkForCollision(obstacle, this.duck, this.ctx);
       });
       if (isCollision) {
         this.duck.setCollision();
@@ -193,6 +193,17 @@ class Game implements IGame {
             this.gameOverPanel.draw();
           }, 50);
         }
+      }
+
+      /* 判斷吃到道具 */
+      let isBuff = false;
+      isBuff = this.horizon.props.some((prop) => {
+        return hasObstacles && checkForCollision(prop, this.duck, this.ctx);
+      });
+      if (isBuff) {
+        this.horizon.props = [];
+        this.horizon.obstacles = [];
+        this.duck.getBuff();
       }
 
       /* 判斷完成遊戲 */

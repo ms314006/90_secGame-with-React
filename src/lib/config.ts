@@ -82,7 +82,7 @@ export const obstacleTypes = [{
   type: 'boss-1',
   width: 385,
   height: 300,
-  xPos: [230, 390, 550, 710],
+  xPos: [230, 390, 550],
   yPos: -300,
   multipleSpeed: 4,
   minGap: 150,
@@ -104,9 +104,23 @@ export const obstacleTypes = [{
   ],
 }];
 
+export const propTypes = [{
+  type: 'superStar',
+  width: 90,
+  height: 74,
+  xPos: [230, 390, 550, 710, 870],
+  yPos: -100,
+  multipleSpeed: 4,
+  minGap: 100,
+  minSpeed: 0,
+  collisionBoxes: [
+    new CollisionBox(10, 10, 50, 50)
+  ],
+}];
+
 export const duck = {
   config: {
-    width: 130,
+    width: 200,
     height: 230,
   },
   status: {
@@ -114,28 +128,7 @@ export const duck = {
     right: 'right',
     running: 'running',
     waiting: 'waiting',
-  },
-  animFrames: {
-    waiting: {
-      frames: [44, 0],
-      msPerFrame: 1000 / 3,
-    },
-    running: {
-      frames: [88, 132],
-      msPerFrame: 1000 / 12,
-    },
-    crashed: {
-      frames: [220],
-      msPerFrame: 1000 / 60,
-    },
-    jumping: {
-      frames: [0],
-      msPerFrame: 1000 / 60,
-    },
-    right: {
-      frames: [0],
-      msPerFrame: 1000 / 60,
-    },
+    super: 'super',
   },
   collisionBoxes: {
     running: [

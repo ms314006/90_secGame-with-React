@@ -59,7 +59,7 @@ class VictoryGameAnimation implements IVictoryGameAnimation {
         document.getElementById('duck-1'),
         0, 0,
         this.canvasDimensions.width, this.canvasDimensions.height,
-        this.centerX - (duck.config.width / 2), duckYPos,
+        this.centerX - (duck.config.width / 2) + 30, duckYPos,
         this.canvasDimensions.width, this.canvasDimensions.height
       );
 

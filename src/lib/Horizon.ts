@@ -1,9 +1,11 @@
 import HorizonLine from './HorizonLine';
 import Obstacle from './Obstacle';
+import Prop from './Prop';
 import { IHorizon } from './interface/IHorizon';
 import { IHorizonLine } from './interface/IHorizonLine';
 import { IObstacle } from './interface/IObstacle';
-import { FPS, config, obstacleTypes } from './config';
+import { IProp } from './interface/IProp';
+import { FPS, config, obstacleTypes, propTypes } from './config';
 import { getRandomNum } from '../util';
 
 class Horizon implements IHorizon {
@@ -18,6 +20,8 @@ class Horizon implements IHorizon {
   dimensions: any;
 
   obstacles: IObstacle[] = [];
+
+  props: IProp[] = [];
 
   constructor(canvas: HTMLCanvasElement, dimensions: any) {
     this.canvas = canvas;
@@ -39,6 +43,7 @@ class Horizon implements IHorizon {
     if (updateObstacles) {
       this.updateObstacles(deltaTime, currentSpeed);
     }
+    this.updateProps(deltaTime, currentSpeed);
   }
 
   init = (): void => {
@@ -135,6 +140,31 @@ class Horizon implements IHorizon {
       }
     } else {
       this.addNewObstacle();
+    }
+  }
+
+  addNewProps = (): void => {
+    const propType = propTypes[0];
+    const prop = new Prop(this.canvas, propType);
+    prop.init();
+    this.props.push(prop);
+  }
+
+  updateProps = (deltaTime: number, currentSpeed: number): void => {
+    const updatedProps = this.props.slice(0);
+
+    this.props.forEach((prop) => {
+      prop.update(deltaTime, currentSpeed);
+
+      if (prop.remove) {
+        updatedProps.splice(updatedProps.indexOf(prop), 1);
+      }
+    });
+
+    this.props = updatedProps;
+    const ariseProbability = getRandomNum(0, 1000);
+    if (this.props.length === 0 && ariseProbability < 1) {
+      this.addNewProps();
     }
   }
 }

@@ -111,20 +111,35 @@ class Duck implements IDuck {
       case duck.status.waiting:
         duckImage = `duck-${this.swimStep}`;
         break;
+      case duck.status.super:
+        duckImage = `duck-super-${this.swimStep}`;
+        break;
       case duck.status.crashed:
         duckImage = 'duck-lose';
         break;
       default:
     }
 
+    let superXPosOffset = 0;
+    if (this.status === duck.status.super) {
+      superXPosOffset += -7 * this.swimStep;
+    }
+
     this.ctx.drawImage(
       document.getElementById(duckImage),
       0, 0,
       this.config.width, this.config.height,
-      this.xPos, this.yPos,
+      this.xPos + superXPosOffset, this.yPos,
       this.config.width, outputHeight
     );
     this.ctx.globalAlpha = 1;
+  }
+
+  getBuff = (): void => {
+    this.status = duck.status.super;
+    setTimeout(() => {
+      this.status = duck.status.waiting;
+    }, 3000);
   }
 }
 
