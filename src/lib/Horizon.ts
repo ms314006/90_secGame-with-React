@@ -17,16 +17,11 @@ class Horizon implements IHorizon {
 
   dimensions: any;
 
-  gapCoefficient: number;
-
   obstacles: IObstacle[] = [];
 
-  constructor(
-    canvas: HTMLCanvasElement, dimensions: any, gapCoefficient: number
-  ) {
+  constructor(canvas: HTMLCanvasElement, dimensions: any) {
     this.canvas = canvas;
     this.dimensions = dimensions;
-    this.gapCoefficient = gapCoefficient;
   }
 
   reset = (): void => {
@@ -57,11 +52,11 @@ class Horizon implements IHorizon {
       const ariseObstacles = ['ball'];
       switch (true) {
         case currentTime >= 30 && currentTime < 60:
-          ariseObstacles.push('boss_01');
+          ariseObstacles.push('boss_01', 'boss_01');
           break;
         case currentTime >= 60:
           ariseObstacles.push('boss_01');
-          ariseObstacles.push('boss_02');
+          ariseObstacles.push('boss_02', 'boss_02');
           break;
         default:
       }
@@ -72,11 +67,11 @@ class Horizon implements IHorizon {
         const currentTime = Math.round(this.gameTime / 1000);
         switch (true) {
           case currentTime >= 0 && currentTime < 30:
-            return [1, 2];
-          case currentTime >= 30 && currentTime < 60:
             return [2, 3];
-          case currentTime >= 60:
+          case currentTime >= 30 && currentTime < 60:
             return [3, 4];
+          case currentTime >= 60:
+            return [4, 4];
           default:
             return [0, 0];
         }
@@ -88,7 +83,7 @@ class Horizon implements IHorizon {
       Array(...new Array(obstacleCount)).forEach(() => {
         const obstacleTypeIndex = getRandomNum(0, 4);
         const obstacleType = obstacleTypes[obstacleTypeIndex];
-        const obstacle = new Obstacle(this.canvas, obstacleType, this.dimensions, this.gapCoefficient, obstaclesXpos);
+        const obstacle = new Obstacle(this.canvas, obstacleType, this.dimensions, obstaclesXpos);
         obstacle.init();
         obstaclesXpos.push(obstacle.xPos);
         this.obstacles.push(obstacle);
@@ -97,7 +92,7 @@ class Horizon implements IHorizon {
 
     const generateBoss = (bossIndex: number): void => {
       const obstacleType = obstacleTypes[bossIndex];
-      const obstacle = new Obstacle(this.canvas, obstacleType, this.dimensions, this.gapCoefficient, obstaclesXpos);
+      const obstacle = new Obstacle(this.canvas, obstacleType, this.dimensions, obstaclesXpos);
       obstacle.init();
       obstaclesXpos.push(obstacle.xPos);
       this.obstacles.push(obstacle);

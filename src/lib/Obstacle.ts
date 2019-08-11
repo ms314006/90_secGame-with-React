@@ -1,5 +1,5 @@
 import { IObstacle } from './interface/IObstacle'
-import { FPS, obstacleTypes } from './config';
+import { FPS } from './config';
 import { getRandomNum } from '../util';
 
 class Obstacle implements IObstacle {
@@ -9,13 +9,7 @@ class Obstacle implements IObstacle {
 
   typeConfig: any;
 
-  gapCoefficient: number;
-
   dimensions: number;
-
-  maxGapCoefficient: number = 1.5;
-
-  maxObstacleLength: number = 3;
 
   xPos: number = 0;
 
@@ -37,14 +31,12 @@ class Obstacle implements IObstacle {
     canvas: HTMLCanvasElement,
     obstacleType: any,
     dimensions: any,
-    gapCoefficient: number,
     filterXpos: number[]
   ) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.typeConfig = obstacleType;
     this.dimensions = dimensions;
-    this.gapCoefficient = gapCoefficient;
     this.filterXpos = filterXpos;
   }
 
@@ -105,9 +97,7 @@ class Obstacle implements IObstacle {
     }
   }
 
-  isVisible = (): boolean => {
-    return this.yPos < 900;
-  }
+  isVisible = (): boolean => this.yPos < 900;
 }
 
 export default Obstacle;

@@ -235,7 +235,7 @@ class Game implements IGame {
     }
 
     /* 背景區塊 */
-    this.horizon = new Horizon(this.canvas, this.dimensions, this.config.gapCoefficient);
+    this.horizon = new Horizon(this.canvas, this.dimensions);
     this.horizon.init();
 
     /* 計分器 */
