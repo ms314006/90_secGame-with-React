@@ -2,9 +2,11 @@ import { IGame } from './interface/IGame';
 import { IHorizon } from './interface/IHorizon';
 import { IDuck } from './interface/IDuck';
 import { IGameOverPanel } from './interface/IGameOverPanel'
+import { ITiming } from './interface/ITiming';
 import Horizon from './Horizon';
 import Duck from './Duck';
 import GameOverPanel from './GameOverPanel';
+import Timing from './Timing';
 import { config, dimensions } from './config';
 import { checkForCollision } from '../util'
 
@@ -45,11 +47,15 @@ class Game implements IGame {
     keyUp: 'keyup',
   };
 
+  visibleGameOverPanel: boolean = false;
+
   horizon: IHorizon = null;
 
   duck: IDuck = null;
 
   gameOverPanel: IGameOverPanel = null;
+
+  timing: ITiming = null;
 
   private classes: any = {
     container: 'runner-container',
@@ -161,6 +167,7 @@ class Game implements IGame {
       this.gameTime += deltaTime;
       const hasObstacles = this.gameTime > this.config.clearTime;
       this.horizon.update(deltaTime, this.gameTime, this.currentSpeed, hasObstacles);
+      this.timing.update(this.gameTime);
       this.duck.update(deltaTime);
       let isCollision = hasObstacles;
       isCollision = this.horizon.obstacles.some((obstacle) => {
@@ -168,13 +175,16 @@ class Game implements IGame {
       });
       if (isCollision) {
         this.duck.setCollision();
-        setTimeout(() => {
-          this.crashed = true;
-        }, 50);
-        this.gameOverPanel = new GameOverPanel(
-          this.canvas, this.dimensions, this.reset
-        );
-        this.gameOverPanel.draw();
+        if (!this.visibleGameOverPanel) {
+          this.visibleGameOverPanel = true;
+          setTimeout(() => {
+            this.crashed = true;
+            this.gameOverPanel = new GameOverPanel(
+              this.canvas, this.dimensions, this.reset
+            );
+            this.gameOverPanel.draw();
+          }, 50);
+        }
       }
     }
     this.scheduleNextUpdate();
@@ -207,6 +217,10 @@ class Game implements IGame {
     this.horizon = new Horizon(this.canvas, this.dimensions, this.config.gapCoefficient);
     this.horizon.init();
 
+    /* 計分器 */
+    this.timing = new Timing(this.canvas, this.gameTime, this.dimensions);
+    this.timing.draw();
+
     /* 小鴨 */
     this.duck = new Duck(this.canvas);
     this.duck.init();
@@ -231,6 +245,7 @@ class Game implements IGame {
     this.setPlayStatus(true);
     this.paused = false;
     this.crashed = false;
+    this.visibleGameOverPanel = false;
     this.currentSpeed = this.config.speed;
     this.time = this.getTimeStamp();
     this.clearCanvas();
