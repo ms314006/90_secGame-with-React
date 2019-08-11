@@ -75,7 +75,7 @@ class Duck implements IDuck {
   }
 
   reset = (): void => {
-    this.groundXPos = (dimensions.width / 2) - (this.config.width / 2);
+    this.groundXPos = (dimensions.width / 2) - (this.config.width / 2) + 30;
     this.xPos = this.groundXPos;
     this.yPos = dimensions.height - this.config.height - config.bottomPad;
     this.status = duck.status.waiting;
@@ -84,7 +84,7 @@ class Duck implements IDuck {
   }
 
   init = (): void => {
-    this.groundXPos = (dimensions.width / 2) - (this.config.width / 2);
+    this.groundXPos = (dimensions.width / 2) - (this.config.width / 2) + 30;
     this.xPos = this.groundXPos;
     this.yPos = dimensions.height - this.config.height - config.bottomPad;
     this.draw();
