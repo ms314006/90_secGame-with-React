@@ -2,7 +2,7 @@ import { ITiming } from './interface/ITiming.ts';
 import { config } from './config';
 import { borderRadioRect } from '../util';
 
-class Timing {
+class Timing implements ITiming {
   canvas: HTMLCanvasElement;
 
   ctx: any;
