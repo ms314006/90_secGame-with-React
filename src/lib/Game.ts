@@ -1,12 +1,14 @@
 import { IGame } from './interface/IGame';
 import { IHorizon } from './interface/IHorizon';
 import { IDuck } from './interface/IDuck';
-import { IGameOverPanel } from './interface/IGameOverPanel'
+import { IGameOverPanel } from './interface/IGameOverPanel';
+import { IVictoryGameAnimation } from './interface/IVictoryGameAnimation';
 import { ITiming } from './interface/ITiming';
 import Horizon from './Horizon';
 import Duck from './Duck';
 import GameOverPanel from './GameOverPanel';
 import Timing from './Timing';
+import VictoryGameAnumation from './VictoryGameAnumation';
 import { config, dimensions } from './config';
 import { checkForCollision } from '../util'
 
@@ -41,6 +43,8 @@ class Game implements IGame {
 
   paused: boolean = false;
 
+  victory: boolean = false;
+
   events: any = {
     load: 'load',
     keyDown: 'keydown',
@@ -54,6 +58,8 @@ class Game implements IGame {
   duck: IDuck = null;
 
   gameOverPanel: IGameOverPanel = null;
+
+  victoryGameAnimation: IVictoryGameAnimation = null;
 
   timing: ITiming = null;
 
@@ -161,7 +167,7 @@ class Game implements IGame {
     const deltaTime = now - (this.time || now);
     this.time = now;
 
-    if (this.playing && !this.paused && !this.crashed) {
+    if (this.playing && !this.paused && !this.crashed && !this.victory) {
       this.clearCanvas();
 
       this.gameTime += deltaTime;
@@ -169,6 +175,8 @@ class Game implements IGame {
       this.horizon.update(deltaTime, this.gameTime, this.currentSpeed, hasObstacles);
       this.timing.update(this.gameTime);
       this.duck.update(deltaTime);
+
+      /* 判斷碰撞 */
       let isCollision = hasObstacles;
       isCollision = this.horizon.obstacles.some((obstacle) => {
         return hasObstacles && checkForCollision(obstacle, this.duck, this.ctx)
@@ -185,6 +193,19 @@ class Game implements IGame {
             this.gameOverPanel.draw();
           }, 50);
         }
+      }
+
+      /* 判斷完成遊戲 */
+      const isVictoryGame = () => (
+        Math.round(this.gameTime / 1000) >= config.gameTotalTime
+      );
+
+      if (isVictoryGame()) {
+        this.victory = true;
+        this.victoryGameAnimation = new VictoryGameAnumation(
+          this.canvas, this.dimensions, this.reset
+        );
+        this.victoryGameAnimation.draw();
       }
     }
     this.scheduleNextUpdate();
@@ -218,7 +239,7 @@ class Game implements IGame {
     this.horizon.init();
 
     /* 計分器 */
-    this.timing = new Timing(this.canvas, this.gameTime, this.dimensions);
+    this.timing = new Timing(this.canvas, this.dimensions);
     this.timing.draw();
 
     /* 小鴨 */
@@ -245,6 +266,7 @@ class Game implements IGame {
     this.setPlayStatus(true);
     this.paused = false;
     this.crashed = false;
+    this.victory = false;
     this.visibleGameOverPanel = false;
     this.currentSpeed = this.config.speed;
     this.time = this.getTimeStamp();
