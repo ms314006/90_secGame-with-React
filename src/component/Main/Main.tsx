@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import Runner from '../../lib/Runner';
+import Game from '../../lib/Game';
 
 const Main = () => {
   const canvas = useRef(null);
   useEffect(() => {
-    const runner = new Runner(canvas.current);
-    runner.loadImages();
+    const game = new Game(canvas.current);
+    game.loadImages();
   }, []);
   return (
     <div id="chrome-dino" ref={canvas} />
