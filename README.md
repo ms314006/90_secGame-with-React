@@ -1,37 +1,26 @@
-## Welcome to GitHub Pages
+# 90_secGame-with-React
+90_secGame-with-React feat. TypeScript
 
-You can use the [editor on GitHub](https://github.com/ms314006/90_secGame-with-React/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+## 心得
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+1. 看到這禮拜的題目，就突然想到之前有研究過 Google 的恐龍遊戲，於是又去翻了一下原始碼出來參考，本來想要試著完成一些不確定能不能達成的功能，結果做著做著就一直到完成這禮拜的題目了 XD ，推薦大家也可以去看 Google 的恐龍 Code 。
+2. 這禮拜寫得滿開心的 interface 和 class 幾乎完成所有的事情，因為也不需要另外去 render 畫面，只要控制好 canvas 的 draw 就行了。
+3. 然後寫一堆 interface 和 class 後，突然對設計又有了新的想法，感覺又更了解物件導向。
+4. 第五個禮拜了，還是維持只有第一週寫下測試 ~_~ ，感覺有點愧疚，嗚嗚。
+5. 其實還有很多地方還沒做完，包含以下：
+    1. 氣球後的障礙物如果是章魚，空隙會滿小的，空隙如果剛好在對角線就必死了。
+    2. 吃到星星的效果除了清場外，應該還要加速個三秒，但這裡還沒想到怎麼做會比較好，就先留著。
+    3. 最後的轉場沒有做得很好，應該可以用淡入黑畫面，在淡亮呈現最後的完成動畫。
+    4. 完成動畫中有三個小圖片，也應該要依序淡入顯示，但來不及完成，嗚嗚。
 
-### Markdown
+## 運行
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+1. clone 到專案資料夾。
+2. 運行指令 `npm install` 。
+3. 運行 `npm run start` 。
+4. 啟動瀏覽器 `http://localhost:8000/dist` 。
 
-```markdown
-Syntax highlighted code block
+## 測試（未完成）
 
-# Header 1
-## Header 2
-### Header 3
+1. 運行指令 `npm run test` 。
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/ms314006/90_secGame-with-React/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
