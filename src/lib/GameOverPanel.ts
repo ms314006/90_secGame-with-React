@@ -53,6 +53,7 @@ class GameOverPlanel implements IGameOverPanel {
       this.canvas, centerX - 75, centerY - 30, '重新挑戰', this.reset
     );
     restartButton.draw('default');
+    restartButton.addReStartEvent();
   }
 }
 

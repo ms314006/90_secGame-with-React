@@ -116,6 +116,7 @@ class VictoryGameAnimation implements IVictoryGameAnimation {
       this.canvas, this.centerX - 75, this.centerY + 90, '再玩一次', this.reset
     );
     restartButton.draw('default');
+    restartButton.addReStartEvent();
   }
 }
 

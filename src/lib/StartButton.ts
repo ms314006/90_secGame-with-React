@@ -43,7 +43,6 @@ class StartButton implements IStartButton {
     this.ctx.fillText(
       '再玩一次', this.posX + 35, this.posY + 30 + posYOffset
     );
-    this.addReStartEvent();
   }
 
   addReStartEvent = () => {
@@ -73,13 +72,16 @@ class StartButton implements IStartButton {
       }
     }, false);
 
-    this.canvas.addEventListener('mouseup', (evt) => {
+    const mouseUpEvent = (evt) => {
       const mousePos = getMousePos(this.canvas, evt);
       if (isInside(mousePos, rect)) {
         this.reset();
+        this.canvas.removeEventListener('mouseup', mouseUpEvent, false);
       }
       this.draw('default');
-    }, false);
+    };
+
+    this.canvas.addEventListener('mouseup', mouseUpEvent, false);
   }
 }
 

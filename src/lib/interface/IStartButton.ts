@@ -4,4 +4,5 @@ export interface IStartButton {
   posY: number;
   text: string;
   draw(buttonType: string): void;
+  addReStartEvent(): void;
 }
