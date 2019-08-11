@@ -8,7 +8,7 @@ export interface IHorizonLine {
   FPS: number;
   image: string;
   init(): void;
-  draw(): void;
+  draw(gamtTime: number): void;
   update(deltaTime: number, speed: number): void;
   reset(): void;
 }

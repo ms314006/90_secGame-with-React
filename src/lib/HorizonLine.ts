@@ -7,22 +7,24 @@ class HorizonLine implements IHorizonLine {
 
   image: string;
 
+  dimensions: any = {
+    width: 1200,
+    height: 900,
+    YPos: 0,
+    Xpos: 0,
+  };
+
   sourceYPos: any[] = [];
 
   xPos: number = 0;
 
   yPos: number[] = [];
 
+  startYPos: number = this.dimensions.height - 120;
+
   spritePos: { x: number, y: number, } = {
     x: 0,
     y: 0,
-  };
-
-  dimensions: any = {
-    width: 1200,
-    height: 900,
-    YPos: 0,
-    Xpos: 0,
   };
 
   constructor(
@@ -39,6 +41,7 @@ class HorizonLine implements IHorizonLine {
   reset = (): void => {
     this.xPos = this.dimensions.Xpos;
     this.yPos = [0, -this.dimensions.height];
+    this.startYPos = this.dimensions.height - 120;
   }
 
   updateYPos = (pos: number, incre: number): void => {
@@ -46,6 +49,7 @@ class HorizonLine implements IHorizonLine {
     const line2 = pos === 0 ? 1 : 0;
     this.yPos[line1] += incre;
     this.yPos[line2] = this.yPos[line1] - this.dimensions.height;
+    this.startYPos += incre;
     if (this.yPos[line1] >= this.dimensions.height) {
       this.yPos[line1] += 0;
       this.yPos[line2] = this.yPos[line1] - this.dimensions.height;
@@ -86,6 +90,17 @@ class HorizonLine implements IHorizonLine {
       this.xPos, this.yPos[0],
       this.dimensions.width, this.dimensions.height
     );
+
+    if (this.startYPos <= 900) {
+      ctx.clearRect(this.xPos, this.startYPos, 1200, 120);
+      ctx.drawImage(
+        document.getElementById('plx-frame_s'),
+        this.spritePos.x, this.sourceYPos[0],
+        this.dimensions.width, this.dimensions.height,
+        this.xPos, this.startYPos,
+        this.dimensions.width, this.dimensions.height
+      );
+    }
 
     ctx.drawImage(
       document.getElementById(this.image),
