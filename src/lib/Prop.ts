@@ -9,8 +9,6 @@ class Prop implements IProp {
 
   typeConfig: any;
 
-  dimensions: number;
-
   xPos: number = 0;
 
   yPos: number = 0;
@@ -25,15 +23,10 @@ class Prop implements IProp {
 
   height: number = 0;
 
-  constructor(
-    canvas: HTMLCanvasElement,
-    propsType: any,
-    dimensions: any
-  ) {
+  constructor(canvas: HTMLCanvasElement, propsType: any) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.typeConfig = propsType;
-    this.dimensions = dimensions;
   }
 
   init = (): void => {
