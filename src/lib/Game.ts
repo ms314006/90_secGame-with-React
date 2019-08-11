@@ -1,11 +1,13 @@
 import { IGame } from './interface/IGame';
 import { IHorizon } from './interface/IHorizon';
 import { IDuck } from './interface/IDuck';
+import { IPromptPanel, IPromptPabel } from './interface/IPromptPanel';
 import { IGameOverPanel } from './interface/IGameOverPanel';
 import { IVictoryGameAnimation } from './interface/IVictoryGameAnimation';
 import { ITiming } from './interface/ITiming';
 import Horizon from './Horizon';
 import Duck from './Duck';
+import PromptPanel from './PromptPanel'
 import GameOverPanel from './GameOverPanel';
 import Timing from './Timing';
 import VictoryGameAnumation from './VictoryGameAnumation';
@@ -45,6 +47,8 @@ class Game implements IGame {
 
   victory: boolean = false;
 
+  isFirstGame: boolean = true;
+
   events: any = {
     load: 'load',
     keyDown: 'keydown',
@@ -62,6 +66,8 @@ class Game implements IGame {
   victoryGameAnimation: IVictoryGameAnimation = null;
 
   timing: ITiming = null;
+
+  promptPanel: IPromptPabel = null
 
   private classes: any = {
     container: 'runner-container',
@@ -259,6 +265,13 @@ class Game implements IGame {
     this.outerContainerEl.appendChild(this.containerEl);
     this.update();
     this.startListening();
+
+    /* 提示視窗 */
+    if (this.isFirstGame) {
+      this.promptPanel = new PromptPanel(this.canvas, this.dimensions);
+      this.promptPanel.draw();
+      this.isFirstGame = false;
+    }
   }
 
   loadImages = (): void => {
