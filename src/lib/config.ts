@@ -115,7 +115,7 @@ export const duck = {
   collisionBoxes: {
     running: [
       new CollisionBox(30, 5, 55, 80),
-      new CollisionBox(15, 60, 92, 70)
+      new CollisionBox(15, 60, 92, 50)
     ],
   },
 };
