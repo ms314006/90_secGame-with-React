@@ -93,3 +93,19 @@ export const checkForCollision = (
   }
   return result;
 };
+
+export const borderRadioRect = (
+  ctx: any, x: number, y: number, w: number, h: number, r: number
+): void => {
+  ctx.beginPath();
+  ctx.moveTo(x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.bezierCurveTo(x, y, x + r, y, x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.bezierCurveTo(x + w, y, x + w, y + r, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.bezierCurveTo(x + w, y + h, x + w - r, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.bezierCurveTo(x, y + h, x, y + h - r, x, y + h - r);
+  ctx.fill();
+};

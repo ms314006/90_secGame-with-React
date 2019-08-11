@@ -1,4 +1,5 @@
 import { IGameOverPanel } from './interface/IGameOverPanel';
+import { borderRadioRect } from '../util';
 
 class GameOverPlanel implements IGameOverPanel {
   canvas: HTMLCanvasElement;
@@ -31,8 +32,8 @@ class GameOverPlanel implements IGameOverPanel {
 
     // 視窗的顏色在中間
     this.ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-    this.borderRadioRect(
-      centerX - 350, centerY - 120, 700, 180, 10
+    borderRadioRect(
+      this.ctx, centerX - 350, centerY - 120, 700, 180, 10
     );
 
     this.ctx.fillStyle = '#FF952B';
@@ -49,22 +50,6 @@ class GameOverPlanel implements IGameOverPanel {
 
     // 重新開始的按鈕
     this.drawStartButton('default', centerX, centerY);
-  }
-
-  borderRadioRect = (
-    x: number, y: number, w: number, h: number, r: number
-  ): void => {
-    this.ctx.beginPath();
-    this.ctx.moveTo(x, y + h - r);
-    this.ctx.lineTo(x, y + r);
-    this.ctx.bezierCurveTo(x, y, x + r, y, x + r, y);
-    this.ctx.lineTo(x + w - r, y);
-    this.ctx.bezierCurveTo(x + w, y, x + w, y + r, x + w, y + r);
-    this.ctx.lineTo(x + w, y + h - r);
-    this.ctx.bezierCurveTo(x + w, y + h, x + w - r, y + h, x + w - r, y + h);
-    this.ctx.lineTo(x + r, y + h);
-    this.ctx.bezierCurveTo(x, y + h, x, y + h - r, x, y + h - r);
-    this.ctx.fill();
   }
 
   drawStartButton = (buttonType: string, centerX: number, centerY: number) => {
