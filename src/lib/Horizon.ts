@@ -52,31 +52,73 @@ class Horizon implements IHorizon {
 
   addNewObstacle = (): void => {
     const obstaclesXpos: number[] = [];
-    const getObstacleCountRange = (): number[] => {
+    const getAriseObstacles = (): string[] => {
       const currentTime = Math.round(this.gameTime / 1000);
+      const ariseObstacles = ['ball'];
       switch (true) {
-        case currentTime >= 0 && currentTime < 30:
-          return [1, 2];
         case currentTime >= 30 && currentTime < 60:
-          return [2, 3];
+          ariseObstacles.push('boss_01');
+          break;
         case currentTime >= 60:
-          return [3, 4];
+          ariseObstacles.push('boss_01');
+          ariseObstacles.push('boss_02');
+          break;
         default:
-          return [0, 0];
       }
+      return ariseObstacles;
     };
-    const obstacleCountRange = getObstacleCountRange();
-    const obstacleCount = getRandomNum(
-      obstacleCountRange[0], obstacleCountRange[1]
-    );
-    Array(...new Array(obstacleCount)).forEach(() => {
-      const obstacleTypeIndex = getRandomNum(0, 4);
-      const obstacleType = obstacleTypes[obstacleTypeIndex];
+    const generateBall = (): void => {
+      const getObstacleCountRange = (): number[] => {
+        const currentTime = Math.round(this.gameTime / 1000);
+        switch (true) {
+          case currentTime >= 0 && currentTime < 30:
+            return [1, 2];
+          case currentTime >= 30 && currentTime < 60:
+            return [2, 3];
+          case currentTime >= 60:
+            return [3, 4];
+          default:
+            return [0, 0];
+        }
+      };
+      const obstacleCountRange = getObstacleCountRange();
+      const obstacleCount = getRandomNum(
+        obstacleCountRange[0], obstacleCountRange[1]
+      );
+      Array(...new Array(obstacleCount)).forEach(() => {
+        const obstacleTypeIndex = getRandomNum(0, 4);
+        const obstacleType = obstacleTypes[obstacleTypeIndex];
+        const obstacle = new Obstacle(this.canvas, obstacleType, this.dimensions, this.gapCoefficient, obstaclesXpos);
+        obstacle.init();
+        obstaclesXpos.push(obstacle.xPos);
+        this.obstacles.push(obstacle);
+      });
+    };
+
+    const generateBoss = (bossIndex: number): void => {
+      const obstacleType = obstacleTypes[bossIndex];
       const obstacle = new Obstacle(this.canvas, obstacleType, this.dimensions, this.gapCoefficient, obstaclesXpos);
       obstacle.init();
       obstaclesXpos.push(obstacle.xPos);
       this.obstacles.push(obstacle);
-    });
+    };
+
+    const ariseObstacles = getAriseObstacles();
+    const obstacleType: string = ariseObstacles[getRandomNum(0, ariseObstacles.length - 1)];
+
+    switch (obstacleType) {
+      case 'ball':
+        generateBall();
+        break;
+      case 'boss_01':
+        generateBoss(5);
+        break;
+      case 'boss_02':
+        generateBoss(6);
+        break;
+      default:
+        throw new Error('Can not get correspond obstacle');
+    }
   }
 
   updateObstacles = (deltaTime: number, currentSpeed: number): void => {

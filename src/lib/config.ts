@@ -9,7 +9,8 @@ export const config = {
   clearTime: 0,
   maxSpeed: 13,
   acceleration: 0.001,
-  bottomPad: 20,
+  bottomPad: 100,
+  gameTotalTime: 90,
 };
 
 export const dimensions = {
@@ -20,7 +21,7 @@ export const dimensions = {
 export const obstacleTypes = [{
   type: 'ball-1',
   width: 120,
-  height: 120,
+  height: 250,
   xPos: [230, 390, 550, 710, 870],
   yPos: -250,
   multipleSpeed: 4,
@@ -32,7 +33,7 @@ export const obstacleTypes = [{
 }, {
   type: 'ball-2',
   width: 120,
-  height: 120,
+  height: 250,
   xPos: [230, 390, 550, 710, 870],
   yPos: -250,
   multipleSpeed: 4,
@@ -44,7 +45,7 @@ export const obstacleTypes = [{
 }, {
   type: 'ball-3',
   width: 120,
-  height: 120,
+  height: 250,
   xPos: [230, 390, 550, 710, 870],
   yPos: -250,
   multipleSpeed: 4,
@@ -56,7 +57,7 @@ export const obstacleTypes = [{
 }, {
   type: 'ball-4',
   width: 120,
-  height: 120,
+  height: 250,
   xPos: [230, 390, 550, 710, 870],
   yPos: -250,
   multipleSpeed: 4,
@@ -68,7 +69,7 @@ export const obstacleTypes = [{
 }, {
   type: 'ball-5',
   width: 120,
-  height: 120,
+  height: 250,
   xPos: [230, 390, 550, 710, 870],
   yPos: -250,
   multipleSpeed: 4,
@@ -76,6 +77,30 @@ export const obstacleTypes = [{
   minSpeed: 0,
   collisionBoxes: [
     new CollisionBox(5, 8, 80, 80)
+  ],
+}, {
+  type: 'boss-1',
+  width: 385,
+  height: 300,
+  xPos: [230, 390, 550, 710],
+  yPos: -300,
+  multipleSpeed: 4,
+  minGap: 150,
+  minSpeed: 0,
+  collisionBoxes: [
+    new CollisionBox(20, 8, 320, 250)
+  ],
+}, {
+  type: 'boss-2',
+  width: 600,
+  height: 422,
+  xPos: [230, 390],
+  yPos: -350,
+  multipleSpeed: 4,
+  minGap: 200,
+  minSpeed: 0,
+  collisionBoxes: [
+    new CollisionBox(0, 50, 550, 300)
   ],
 }];
 
