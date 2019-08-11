@@ -1,3 +1,4 @@
+import StartButton from './StartButton';
 import { IGameOverPanel } from './interface/IGameOverPanel';
 import { borderRadioRect } from '../util';
 
@@ -21,7 +22,6 @@ class GameOverPlanel implements IGameOverPanel {
     const centerX = this.canvasDimensions.width / 2;
     const centerY = this.canvasDimensions.height / 2;
 
-    this.addReStartEvent(centerX, centerY);
     // 背景半透明黑色矩形
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
     this.ctx.fillRect(
@@ -49,60 +49,10 @@ class GameOverPlanel implements IGameOverPanel {
     );
 
     // 重新開始的按鈕
-    this.drawStartButton('default', centerX, centerY);
-  }
-
-  drawStartButton = (buttonType: string, centerX: number, centerY: number) => {
-    const posY = buttonType === 'default' ? 10 : 15;
-    this.ctx.fillStyle = '#FFFFFF';
-    this.ctx.fillRect(centerX - 75, centerY - 20, 150, 55);
-    this.ctx.drawImage(
-      document.getElementById(`restart-${buttonType}`),
-      0, 0, 150, 55,
-      centerX - 75, centerY - 30 + posY,
-      150, 55
+    const restartButton = new StartButton(
+      this.canvas, centerX - 75, centerY - 30, '重新挑戰', this.reset
     );
-    this.ctx.fillStyle = '#FFFFFF';
-    this.ctx.font = '20px Arial';
-    this.ctx.fillText(
-      '重新挑戰', centerX - 40, centerY + posY
-    );
-  }
-
-  addReStartEvent = (centerX: number, centerY: number) => {
-    const getMousePos = (canvas: HTMLCanvasElement, event: any): any => {
-      const rect = this.canvas.getBoundingClientRect();
-      return {
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top,
-      };
-    };
-
-    const isInside = (pos: any, rect: any) => (
-      pos.x > rect.x && pos.x < rect.x + rect.width && pos.y < rect.y + rect.height && pos.y > rect.y
-    );
-
-    const rect = {
-      x: centerX - 75,
-      y: centerY - 20,
-      width: 150,
-      height: 55,
-    };
-
-    this.canvas.addEventListener('mousedown', (evt) => {
-      const mousePos = getMousePos(this.canvas, evt);
-      if (isInside(mousePos, rect)) {
-        this.drawStartButton('click', centerX, centerY);
-      }
-    }, false);
-
-    this.canvas.addEventListener('mouseup', (evt) => {
-      const mousePos = getMousePos(this.canvas, evt);
-      if (isInside(mousePos, rect)) {
-        this.reset();
-      }
-      this.drawStartButton('default', centerX, centerY);
-    }, false);
+    restartButton.draw('default');
   }
 }
 
