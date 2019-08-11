@@ -94,7 +94,7 @@ class Duck implements IDuck {
   draw = (): void => {
     const outputHeight = this.config.height;
     // 移動量
-    const moveDestance = 6;
+    const moveDestance = 8;
     if (this.right
       && this.status !== duck.status.crashed
       && this.xPos <= dimensions.width - 340) {
